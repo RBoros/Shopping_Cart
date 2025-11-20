@@ -1,0 +1,138 @@
+openapi: 3.1.0
+info:
+  title: New Collection
+  contact: {}
+  version: '1.0'
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+- url: http://localhost:3000/api
+  variables: {}
+paths:
+  /cart:
+    get:
+      tags:
+      - Carts
+      summary: Get current user's cart
+      operationId: Getcurrentuser'scart
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    post:
+      tags:
+      - Carts
+      summary: New Request
+      operationId: NewRequest
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/NewRequestRequest'
+              - examples:
+                - product_id: '{{productId}}'
+                  quantity: '{{quantity}}'
+              contentMediaType: application/json
+            example:
+              product_id: '{{productId}}'
+              quantity: '{{quantity}}'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+      - Carts
+      summary: New Request
+      operationId: DeleteNewRequest1
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+  /cart/items/{productId}:
+    put:
+      tags:
+      - Carts
+      summary: New Request
+      operationId: PutNewRequest
+      parameters:
+      - name: productId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/NewRequestRequest1'
+              - examples:
+                - quantity: '{{quantity}}'
+              contentMediaType: application/json
+            example:
+              quantity: '{{quantity}}'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+      - Carts
+      summary: New Request
+      operationId: DeleteNewRequest
+      parameters:
+      - name: productId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+components:
+  schemas:
+    NewRequestRequest:
+      title: NewRequestRequest
+      required:
+      - product_id
+      - quantity
+      type: object
+      properties:
+        product_id:
+          type: string
+        quantity:
+          type: string
+      examples:
+      - product_id: '{{productId}}'
+        quantity: '{{quantity}}'
+    NewRequestRequest1:
+      title: NewRequestRequest1
+      required:
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: string
+      examples:
+      - quantity: '{{quantity}}'
+tags:
+- name: Carts
+  description: 'API endpoints for managing shopping carts for users'
