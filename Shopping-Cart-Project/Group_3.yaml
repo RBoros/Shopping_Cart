@@ -5,10 +5,10 @@ info:
   version: '1.0'
 jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
 servers:
-- url: http://localhost:3000/api
+- url: /api/cart
   variables: {}
 paths:
-  /cart:
+  /:
     get:
       tags:
       - Carts
@@ -32,7 +32,7 @@ paths:
           headers: {}
       deprecated: false
     parameters: []
-  /cart/items:
+  /items:
     post:
       tags:
       - Carts
@@ -60,7 +60,7 @@ paths:
           headers: {}
       deprecated: false
     parameters: []
-  /cart/items/{productId}:
+  /items/{productId}:
     put:
       tags:
       - Carts
