@@ -1,0 +1,23 @@
+# Step 1: Specify the base image to use
+FROM node:20-alpine
+# Update base OS packages to include security fixes for the image
+RUN apk update && apk upgrade --no-cache
+# Step 2: Set the working directory inside the container
+# This is where our app's code will live.
+WORKDIR /usr/src/app
+# Step 3: Copy package.json and package-lock.json
+# Copying these first allows Docker to cache the installed dependencies.
+COPY package*.json ./
+# Step 4: Install production dependencies
+# 'npm ci' is often faster and more reliable for CI/CD.
+# The '--only=production' flag skips developer dependencies.
+RUN npm ci 
+# Step 5: Copy the rest of the application source code
+COPY . .
+ENV PORT=3000
+# Step 6: Expose the port the app runs on
+# This tells Docker which port to make available.
+EXPOSE 3000
+# Step 7: Define the command to run the application
+# This is the command that will be executed when the container starts.
+CMD ["sh", "-c", "npm run seed && npm start"]
