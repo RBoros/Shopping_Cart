@@ -1,0 +1,140 @@
+openapi: 3.1.0
+info:
+  title: Shopping Cart Service
+  contact: {}
+  version: '1.0'
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+- url: /api/cart
+  variables: {}
+paths:
+  /:
+    get:
+      tags:
+      - Carts
+      summary: Get current user's cart
+      operationId: Getcurrentuser'scart
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+      - Carts
+      summary: Clear the entire cart
+      operationId: Cleartheentirecart
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+  /items:
+    post:
+      tags:
+      - Carts
+      summary: Add item to cart
+      operationId: Additemtocart
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AdditemtocartRequest'
+              - examples:
+                - product_id: '{{productId}}'
+                  quantity: '{{quantity}}'
+              contentMediaType: application/json
+            example:
+              product_id: '{{productId}}'
+              quantity: '{{quantity}}'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+  /items/{productId}:
+    put:
+      tags:
+      - Carts
+      summary: Update quantity of item in cart
+      operationId: Updatequantityofitemincart
+      parameters:
+      - name: productId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdatequantityofitemincartRequest'
+              - examples:
+                - quantity: '{{quantity}}'
+              contentMediaType: application/json
+            example:
+              quantity: '{{quantity}}'
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+      - Carts
+      summary: Remove item from cart
+      operationId: Removeitemfromcart
+      parameters:
+      - name: productId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    parameters: []
+components:
+  schemas:
+    AdditemtocartRequest:
+      title: AdditemtocartRequest
+      required:
+      - product_id
+      - quantity
+      type: object
+      properties:
+        product_id:
+          type: string
+        quantity:
+          type: string
+      examples:
+      - product_id: '{{productId}}'
+        quantity: '{{quantity}}'
+    UpdatequantityofitemincartRequest:
+      title: UpdatequantityofitemincartRequest
+      required:
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: string
+      examples:
+      - quantity: '{{quantity}}'
+tags:
+- name: Carts
+  description: 'API endpoints for managing shopping carts for users'
