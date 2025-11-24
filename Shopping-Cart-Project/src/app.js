@@ -17,6 +17,8 @@ app.get("/", (req, res, next) => {
 // This tells Express to use the userRoutes for any request that starts with "/api"
 app.use('/api', userRoutes);
 
+//app.use('/api/cart', cartRoutes);
+
 // Default response for any other request (404)
 app.use(function(req, res){
     // You might want to send a proper 404 response
