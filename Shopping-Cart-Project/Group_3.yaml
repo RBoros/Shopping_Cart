@@ -7,7 +7,7 @@ jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
 servers:
 - url: http://cart:3000/api/cart
   description: Docker network (API Gateway or other containers)
-- url: http://localhost:3000/api
+- url: http://localhost:3000/api/cart
   description: Local development (Postman, host machine)
   variables: {}
 paths:
