@@ -16,12 +16,30 @@ async function setupDatabase() {
 
         console.log('Connected to the SQLite database.');
         // use .exec() for statements that don't return rows
-        await db.exec(`CREATE TABLE IF NOT EXISTS users (
+        await db.exec(`
+            CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             email TEXT UNIQUE
-        )`);
-        
+            );
+            
+            CREATE TABLE IF NOT EXISTS carts (
+            cart_id TEXT PRIMARY KEY,
+            user_id TEXT UNIQUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            added_at DATETIME
+            );
+
+            CREATE TABLE IF NOT EXISTS cart_items (
+            cart_item_id TEXT PRIMARY KEY,
+            FOREIGN KEY (cart_id) REFERENCES carts(cart_id) ON DELETE CASCADE,
+            product_id TEXT UNIQUE,
+            quantity INTEGER,
+            added_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );    
+
+        `);
+
         return db;
     } catch (err) {
         console.error('Error connecting to the database', err.message);
