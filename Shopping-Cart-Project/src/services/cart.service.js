@@ -1,6 +1,8 @@
-// services/user.service.js
-const userRepository = require('../repositories/user.repository');
+// services/cart.service.js
+//const userRepository = require('../repositories/user.repository');
+const cartRepository = require('../repositories/cart.repository');
 
+/*
 class UserService {
     async getAllUsers() {
         // Here you could add business logic, e.g., check user permissions
@@ -41,6 +43,39 @@ class UserService {
         }
         return await userRepository.delete(id);
     }
-}
+}*/
 
-module.exports = new UserService();
+class CartService {
+    async getAllCartItems(cartData) {
+        const result = await cartRepository.findAll(cartData);
+        if(!result.items) {
+            result.items = [];
+        }
+        return result;
+    }
+
+    async addItemToCart(cartData) {
+        return await cartRepository.addItem(cartData);
+    }
+
+    async updateItemInCart(productId, cartData) {
+        const item = await cartRepository.updateItem(productId, cartData);
+        if (item) {
+            if(item.quantity <= 0) {
+                return await cartRepository.deleteCartItem(productId, cartData);
+            }
+        }else {
+            return item;
+        } 
+    }
+
+    async deleteCart(cartData) {
+        return await cartRepository.deleteCart(cartData);
+    }
+
+    async deleteCartItem(productId, cartData) {
+        return await cartRepository.deleteCartItem(productId, cartData);
+    }
+}
+//module.exports = new UserService();
+module.exports = new CartService();
