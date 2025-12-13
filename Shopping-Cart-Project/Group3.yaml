@@ -5,13 +5,11 @@ info:
   version: '1.0'
 jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
 servers:
-- url: http://cart:3000/api/cart
-  description: Docker network (API Gateway or other containers)
 - url: http://localhost:3000/api/cart
   description: Local development (Postman, host machine)
   variables: {}
 paths:
-  /:
+  /cart:
     get:
       tags:
       - Carts
@@ -29,13 +27,26 @@ paths:
       summary: Clear the entire cart
       operationId: Cleartheentirecart
       parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CleartheentirecartRequest'
+              - examples:
+                - user_id: '1'
+              contentMediaType: application/json
+            example:
+              user_id: '1'
+        required: true
       responses:
         '200':
           description: ''
           headers: {}
       deprecated: false
     parameters: []
-  /items:
+  /cart/items:
     post:
       tags:
       - Carts
@@ -50,12 +61,14 @@ paths:
               allOf:
               - $ref: '#/components/schemas/AdditemtocartRequest'
               - examples:
-                - product_id: '{{productId}}'
-                  quantity: '{{quantity}}'
+                - user_id: '1'
+                  product_id: A
+                  quantity: '5'
               contentMediaType: application/json
             example:
-              product_id: '{{productId}}'
-              quantity: '{{quantity}}'
+              user_id: '1'
+              product_id: A
+              quantity: '5'
         required: true
       responses:
         '200':
@@ -63,19 +76,13 @@ paths:
           headers: {}
       deprecated: false
     parameters: []
-  /items/{productId}:
+  /cart/items/A:
     put:
       tags:
       - Carts
       summary: Update quantity of item in cart
       operationId: Updatequantityofitemincart
-      parameters:
-      - name: productId
-        in: path
-        description: ''
-        required: true
-        schema:
-          type: string
+      parameters: []
       requestBody:
         description: ''
         content:
@@ -84,10 +91,12 @@ paths:
               allOf:
               - $ref: '#/components/schemas/UpdatequantityofitemincartRequest'
               - examples:
-                - quantity: '{{quantity}}'
+                - user_id: '1'
+                  quantity: 3
               contentMediaType: application/json
             example:
-              quantity: '{{quantity}}'
+              user_id: '1'
+              quantity: 3
         required: true
       responses:
         '200':
@@ -99,13 +108,20 @@ paths:
       - Carts
       summary: Remove item from cart
       operationId: Removeitemfromcart
-      parameters:
-      - name: productId
-        in: path
+      parameters: []
+      requestBody:
         description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RemoveitemfromcartRequest'
+              - examples:
+                - user_id: '1'
+              contentMediaType: application/json
+            example:
+              user_id: '1'
         required: true
-        schema:
-          type: string
       responses:
         '200':
           description: ''
@@ -117,27 +133,56 @@ components:
     AdditemtocartRequest:
       title: AdditemtocartRequest
       required:
+      - user_id
       - product_id
       - quantity
       type: object
       properties:
+        user_id:
+          type: string
         product_id:
           type: string
         quantity:
           type: string
       examples:
-      - product_id: '{{productId}}'
-        quantity: '{{quantity}}'
+      - user_id: '1'
+        product_id: A
+        quantity: '5'
     UpdatequantityofitemincartRequest:
       title: UpdatequantityofitemincartRequest
       required:
+      - user_id
       - quantity
       type: object
       properties:
+        user_id:
+          type: string
         quantity:
+          type: integer
+          contentEncoding: int32
+      examples:
+      - user_id: '1'
+        quantity: 3
+    RemoveitemfromcartRequest:
+      title: RemoveitemfromcartRequest
+      required:
+      - user_id
+      type: object
+      properties:
+        user_id:
           type: string
       examples:
-      - quantity: '{{quantity}}'
+      - user_id: '1'
+    CleartheentirecartRequest:
+      title: CleartheentirecartRequest
+      required:
+      - user_id
+      type: object
+      properties:
+        user_id:
+          type: string
+      examples:
+      - user_id: '1'
 tags:
 - name: Carts
   description: 'API endpoints for managing shopping carts for users'
