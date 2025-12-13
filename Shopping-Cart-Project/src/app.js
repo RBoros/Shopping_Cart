@@ -1,7 +1,6 @@
 // index.js
 const express = require('express');
 // 1. Import the router
-//const userRoutes = require('./api/routes/user.routes.js'); 
 const cartRoutes = require('./api/routes/cart.routes.js'); 
 
 
@@ -17,7 +16,6 @@ app.get("/", (req, res, next) => {
 
 // 2. Mount the router
 // This tells Express to use the userRoutes for any request that starts with "/api"
-//app.use('/api', userRoutes);
 
 app.use('/api/cart', cartRoutes);
 

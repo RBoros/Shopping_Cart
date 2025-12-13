@@ -1,14 +1,14 @@
 {
   "name": "user-account-service",
   "version": "1.0.0",
-  "description": "A sample code for the uni-cart services",
+  "description": "Shopping cart service for user accounts",
   "main": "src/server.js",
   "scripts": {
     "seed": "node src/database/seeds/seed.js",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
-  "author": "chungsik song",
+  "author": "Group 3",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^17.2.3",

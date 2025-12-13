@@ -18,13 +18,6 @@ async function setupDatabase() {
 
         console.log('Connected to the SQLite database.');
         // use .exec() for statements that don't return rows
-        /*
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT UNIQUE
-            );
-        */
         await db.exec(`
             CREATE TABLE IF NOT EXISTS carts (
             cart_id TEXT PRIMARY KEY,
@@ -43,7 +36,6 @@ async function setupDatabase() {
             FOREIGN KEY (cart_id) REFERENCES carts(cart_id) ON DELETE CASCADE,
             UNIQUE (cart_id, product_id) 
             );    
-
         `);
 
         return db;
