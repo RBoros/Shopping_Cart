@@ -1,4 +1,5 @@
 // repositories/user.repository.js (Using the 'sqlite' package)
+const { get } = require('../app.js');
 const getDbPromise = require('../config/database.js'); // This is a promise now
 
 /*
@@ -57,7 +58,7 @@ class CartRepository {
     async addItem(cartData) {
         const db = await getDbPromise;
         const existingCart = await db.get("SELECT * FROM carts WHERE user_id = ?", [cartData.user_id]);
-        const existingItem = await db.get("SELECT * FROM cart_items WHERE product_id = ?", [cartData.product_id]);
+        //const existingItem = await db.get("SELECT * FROM cart_items WHERE product_id = ?", [cartData.product_id]);
         let cartId;
         let cartItemId;
         if (!existingCart) {
@@ -69,46 +70,46 @@ class CartRepository {
         }else {
             cartId = existingCart.cart_id;
         }
-
+        cartItemId = cartId +"_item_" + cartData.product_id;
+        const existingItem = await db.get("SELECT * FROM cart_items WHERE cart_item_id = ?", [cartItemId]);
         if(!existingItem) {
-            cartItemId =  cartId +"_item_" + cartData.product_id;
             const cartResult = await db.run(
                 'INSERT INTO cart_items (cart_item_id, cart_id, product_id, quantity) VALUES (?,?,?,?)',
                 cartItemId, cartId, cartData.product_id, cartData.quantity
             );
         }else {
-            cartItemId = existingItem.cart_item_id;
             const cartResult = await db.run(
                 `UPDATE cart_items set quantity = quantity + ? WHERE cart_item_id = ?`,
                 cartData.quantity, cartItemId
             );
         }
          
-        const getAddDate = await db.get("SELECT added_at FROM cart_items WHERE cart_item_id = ?", [cartItemId]);
+        const getAddDate = await db.get("SELECT * FROM cart_items WHERE cart_item_id = ?", [cartItemId]);
         const cartResult = await db.run(
-            `UPDATE cart set added_at = ? WHERE user_id = ?`,
+            `UPDATE carts set added_at = ? WHERE user_id = ?`,
             getAddDate.added_at, cartData.user_id
         );  
-        return { cartItemId };
+        return { getAddDate };
     }
 
     async updateItem(productId, cartData) {
         const db = await getDbPromise;
         const cartID = await db.get("SELECT cart_id FROM carts WHERE user_id = ?", [cartData.user_id]);
-        cartItemId = cartID.cart_id + "_item_" + productId;
+    
+        let cartItemId = cartID.cart_id + "_item_" + productId;
         
         const cartResult1 = await db.run(
-           `UPDATE cart_items set quantity = COALESCE(?, quantity) WHERE cart_item_id = ?`,
+           `UPDATE cart_items set quantity = ? WHERE cart_item_id = ?`,
            cartData.quantity, cartItemId
         );
         const cartResult2 = await db.get(
            "SELECT * FROM cart_items WHERE cart_item_id = ?",
-            cartItemId
+            [cartItemId]
         );
 
         const getAddDate = await db.get("SELECT added_at FROM cart_items WHERE cart_item_id = ?", [cartItemId]);
         const cartResult3 = await db.run(
-            `UPDATE cart set added_at = ? WHERE user_id = ?`,
+            `UPDATE carts set added_at = ? WHERE user_id = ?`,
             getAddDate.added_at, cartData.user_id
         );  
         return { cartResult2 }; 
@@ -116,13 +117,16 @@ class CartRepository {
     
     async deleteCart(cartData) {
         const db = await getDbPromise;
-        return await db.run('DELETE FROM carts WHERE user_id = ?', cartData.user_id);
+        const cartID = await db.get("SELECT cart_id FROM carts WHERE user_id = ?", [cartData.user_id]);
+        return await db.run('DELETE FROM cart_items WHERE cart_id = ?', cartID.cart_id);
+        
+
     }
 
     async deleteCartItem(productId, cartData) {
         const db = await getDbPromise;
         const cartID = await db.get("SELECT cart_id FROM carts WHERE user_id = ?", [cartData.user_id]);
-        cartItemId = cartID.cart_id + "_item_" + productId;
+        const cartItemId = cartID.cart_id + "_item_" + productId;
         const cartResult1 = await db.run('DELETE FROM cart_items WHERE cart_item_id = ?', cartItemId);
         const cartResult2 = await db.all("SELECT * FROM cart_items WHERE cart_id = ?", [cartID.cart_id]);
         return { cartResult2 };

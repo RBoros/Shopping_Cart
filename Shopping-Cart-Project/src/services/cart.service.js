@@ -64,9 +64,9 @@ class CartService {
             if(item.quantity <= 0) {
                 return await cartRepository.deleteCartItem(productId, cartData);
             }
-        }else {
-            return item;
-        } 
+        }
+        return item;
+        
     }
 
     async deleteCart(cartData) {

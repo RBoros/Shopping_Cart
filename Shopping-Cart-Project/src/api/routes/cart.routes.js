@@ -35,7 +35,7 @@ router.post("/items", cartController.addItemToCart);
 router.put("/items/:productId", cartController.updateItemInCart);
 
 // DELETE /api/cart/items - Delete cart
-router.delete("/items", cartController.deleteCart);
+router.delete("/", cartController.deleteCart);
 
 // DELETE /api/cart/items/{productId} - Delete cart item
 router.delete("/items/:productId", cartController.deleteCartItem);

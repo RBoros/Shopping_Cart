@@ -76,7 +76,7 @@ class CartController {
     }
     async updateItemInCart(req, res) {
         try {
-            const result = await cartService.updateItemInCart(req.params.id, req.body);
+            const result = await cartService.updateItemInCart(req.params.productId, req.body);
             if (!result) {
                 return res.status(404).json({ error: 'Cart item not found' });
             }
@@ -88,14 +88,18 @@ class CartController {
     async deleteCart(req, res) {
         try {
             const result = await cartService.deleteCart(req.body);
-            res.status(204).json({ message: "No Xontent"});
+            if (result.changes > 0) {
+                res.status(204).json({ message: "No Content"});
+            }else {
+                res.status(404).json({ error: 'Cart not found' });
+            }
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     }
     async deleteCartItem(req, res) {
         try {
-            const result = await cartService.deleteCartItem(req.params.id, req.body);
+            const result = await cartService.deleteCartItem(req.params.productId, req.body);
             res.json({ result });
         } catch (err) {
             res.status(500).json({ error: err.message });
