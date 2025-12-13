@@ -37,9 +37,9 @@ async function seed() {
 async function seed() {
     try {
         const db = await dbPromise;
-        console.log('Deleting existing users...');
-        await db.run('DELETE FROM users');
-        await db.run('DELETE FROM sqlite_sequence WHERE name = ?', 'users');
+        //console.log('Deleting existing users...');
+        //await db.run('DELETE FROM users');
+        //await db.run('DELETE FROM sqlite_sequence WHERE name = ?', 'users');
 
         console.log('Deleting existing carts...');
         await db.run('DELETE FROM carts');
@@ -59,9 +59,18 @@ async function seed() {
         for (let i = 0; i < 3; i++) {
             const userId = i;
             const cartId = "cart_" + userId;
-            
-            const sql1 = 'INSERT INTO carts (cart_id, user_id) VALUES (?, ?)';
-            insertPromises1.push(db.run(sql1, [cartId, userId]));
+            const now = new Date();
+
+            const formatted =
+            now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0') + ':' +
+            String(now.getSeconds()).padStart(2, '0');
+
+            const sql1 = 'INSERT INTO carts (cart_id, user_id, added_at) VALUES (?, ?, ?)';
+            insertPromises1.push(db.run(sql1, [cartId, userId, formatted]));
 
             for(let j = 0; j < 3; j++) {
                 const product_id = String.fromCharCode(j + 65);

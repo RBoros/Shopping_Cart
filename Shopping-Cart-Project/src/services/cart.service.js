@@ -48,8 +48,8 @@ class UserService {
 class CartService {
     async getAllCartItems(cartData) {
         const result = await cartRepository.findAll(cartData);
-        if(!result.items) {
-            result.items = [];
+        if(!result.cart_items) {
+            result.cart_items = [];
         }
         return result;
     }
@@ -60,10 +60,9 @@ class CartService {
 
     async updateItemInCart(productId, cartData) {
         const item = await cartRepository.updateItem(productId, cartData);
-        if (item) {
-            if(item.quantity <= 0) {
-                return await cartRepository.deleteCartItem(productId, cartData);
-            }
+        
+        if(item.updatedCartItems.quantity <= 0) {
+            return await cartRepository.deleteCartItem(productId, cartData);
         }
         return item;
         

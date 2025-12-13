@@ -48,17 +48,16 @@ class CartRepository {
         const result1 = await db.get("SELECT * FROM carts WHERE user_id = ?", [cartData.user_id]);
         const result2 = await db.all("SELECT * FROM cart_items WHERE cart_id = ?", [result1.cart_id]);
         return {
-            id: cartData.user_id,
+            user_id: cartData.user_id,
             created_at: result1.created_at,
             added_at: result1.added_at,
-            items: result2 
+            cart_items: result2 
         };
     }
 
     async addItem(cartData) {
         const db = await getDbPromise;
         const existingCart = await db.get("SELECT * FROM carts WHERE user_id = ?", [cartData.user_id]);
-        //const existingItem = await db.get("SELECT * FROM cart_items WHERE product_id = ?", [cartData.product_id]);
         let cartId;
         let cartItemId;
         if (!existingCart) {
@@ -84,12 +83,12 @@ class CartRepository {
             );
         }
          
-        const getAddDate = await db.get("SELECT * FROM cart_items WHERE cart_item_id = ?", [cartItemId]);
+        const updatedCartItems = await db.get("SELECT * FROM cart_items WHERE cart_item_id = ?", [cartItemId]);
         const cartResult = await db.run(
             `UPDATE carts set added_at = ? WHERE user_id = ?`,
-            getAddDate.added_at, cartData.user_id
+            updatedCartItems.added_at, cartData.user_id
         );  
-        return { getAddDate };
+        return { updatedCartItems };
     }
 
     async updateItem(productId, cartData) {
@@ -102,7 +101,7 @@ class CartRepository {
            `UPDATE cart_items set quantity = ? WHERE cart_item_id = ?`,
            cartData.quantity, cartItemId
         );
-        const cartResult2 = await db.get(
+        const updatedCartItems = await db.get(
            "SELECT * FROM cart_items WHERE cart_item_id = ?",
             [cartItemId]
         );
@@ -112,7 +111,7 @@ class CartRepository {
             `UPDATE carts set added_at = ? WHERE user_id = ?`,
             getAddDate.added_at, cartData.user_id
         );  
-        return { cartResult2 }; 
+        return { updatedCartItems }; 
     }
     
     async deleteCart(cartData) {
@@ -128,8 +127,8 @@ class CartRepository {
         const cartID = await db.get("SELECT cart_id FROM carts WHERE user_id = ?", [cartData.user_id]);
         const cartItemId = cartID.cart_id + "_item_" + productId;
         const cartResult1 = await db.run('DELETE FROM cart_items WHERE cart_item_id = ?', cartItemId);
-        const cartResult2 = await db.all("SELECT * FROM cart_items WHERE cart_id = ?", [cartID.cart_id]);
-        return { cartResult2 };
+        const updatedCartItems = await db.all("SELECT * FROM cart_items WHERE cart_id = ?", [cartID.cart_id]);
+        return { updatedCartItems };
     }
 }
 
